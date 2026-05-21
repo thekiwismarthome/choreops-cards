@@ -1,0 +1,64 @@
+type: vertical-stack
+cards:
+  - type: markdown
+    content: >
+      ## ☑️ Today's Chores <ha-icon icon="mdi:calendar-today"></ha-icon> **{{
+      now().strftime('%A, %B %-d') }}**
+    style: |
+      ha-card {
+        background: var(--primary-color);
+        color: var(--text-primary-color);
+        padding: 12px 16px 8px;
+        margin-bottom: -8px;
+        border-radius: 12px 12px 0 0;
+      }
+      h2 { margin: 0 0 4px; font-size: 1.2em; }
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: ""
+      show_header_toggle: false
+      state_color: true
+      style: |
+        ha-card {
+          border-radius: 0 0 12px 12px;
+          overflow: hidden;
+        }
+        #states {
+          padding: 0 !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: stretch !important;
+        }
+        #states > div {
+          display: block !important;
+          width: 100% !important;
+        }
+        .card-content {
+          padding: 0 !important;
+        }
+    filter:
+      include:
+        - entity_id: sensor.*_choreops_chore_status_*
+          state: due
+          options:
+            type: custom:button-card
+            template: choreops_chore_row_left
+        - entity_id: sensor.*_choreops_chore_status_*
+          state: pending
+          options:
+            type: custom:button-card
+            template: choreops_chore_row_left
+        - entity_id: sensor.*_choreops_chore_status_*
+          state: in_progress
+          options:
+            type: custom:button-card
+            template: choreops_chore_row_left
+    sort:
+      method: attribute
+      attribute: assignee
+      ignore_case: true
+    empty_message: 🎉 All caught up! No chores due today.
+grid_options:
+  columns: 15
+  rows: auto
