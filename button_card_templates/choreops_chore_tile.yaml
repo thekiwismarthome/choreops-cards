@@ -1,0 +1,186 @@
+button_card_templates:
+  choreops_chore_tile:
+    layout: icon_name_state2nd
+    show_state: false
+    show_name: true
+    show_icon: true
+    tap_action:
+      action: call-service
+      service: button.press
+      service_data:
+        entity_id: |
+          [[[
+            return entity.entity_id
+              .replace('sensor.', 'button.')
+              .replace('_choreops_chore_status_', '_choreops_claim_chore_');
+          ]]]
+      confirmation:
+        text: |
+          [[[
+            const choreName = entity.attributes.chore_name
+                           || entity.attributes.friendly_name
+                           || entity.entity_id;
+            const assignee = entity.attributes.assignee
+                          || entity.attributes.user_name
+                          || '';
+            return assignee
+              ? `Mark "${choreName}" as done for ${assignee}?`
+              : `Mark "${choreName}" as done?`;
+          ]]]
+    hold_action:
+      action: more-info
+    name: |
+      [[[
+        const choreName = entity.attributes.chore_name
+                       || entity.attributes.friendly_name
+                       || entity.entity_id;
+        const assignee = entity.attributes.assignee
+                      || entity.attributes.user_name
+                      || '';
+        return assignee ? `${choreName}\n${assignee}` : choreName;
+      ]]]
+    state:
+      - value: due
+        color: var(--error-color)
+        icon: mdi:clock-alert-outline
+      - value: pending
+        color: var(--warning-color)
+        icon: mdi:clock-outline
+      - value: in_progress
+        color: var(--info-color)
+        icon: mdi:progress-check
+    extra_styles: |
+      ha-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(0,0,0,0.05) 0%,
+          rgba(0,0,0,0.70) 100%
+        );
+        pointer-events: none;
+      }
+    styles:
+      card:
+        - height: 100px
+        - border-radius: 12px
+        - margin: 0
+        - position: relative
+        - overflow: hidden
+        - background-image: |
+            [[[
+              const n = (
+                entity.attributes.chore_name ||
+                entity.attributes.friendly_name ||
+                entity.entity_id
+              ).toLowerCase();
+              if (n.includes('dishwasher'))                          return "url('/local/chores/dishwasher.jpg')";
+              if (n.includes('recycl'))                              return "url('/local/chores/recycling.jpg')";
+              if (n.includes('rubbish') || n.includes('bin') || n.includes('trash'))
+                                                                     return "url('/local/chores/bin.jpg')";
+              if (n.includes('vacuum') || n.includes('hoover'))      return "url('/local/chores/vacuum.jpg')";
+              if (n.includes('laundry') || n.includes('wash'))       return "url('/local/chores/laundry.jpg')";
+              return "url('/local/chores/chore.jpg')";
+            ]]]
+        - background-size: cover
+        - background-position: center
+      icon:
+        - position: absolute
+        - top: 8px
+        - left: 8px
+        - z-index: 2
+        - width: 18px
+        - background: rgba(0,0,0,0.50)
+        - border-radius: 50%
+        - padding: 4px
+        - filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8))
+      name:
+        - position: absolute
+        - bottom: 8px
+        - left: 8px
+        - right: 8px
+        - z-index: 2
+        - color: white
+        - font-size: 0.8em
+        - font-weight: 600
+        - text-align: left
+        - text-shadow: 0 1px 4px rgba(0,0,0,0.9)
+        - white-space: pre-line
+        - line-height: 1.3
+  choreops_chore_row1:
+    layout: icon_name_state2nd
+    show_state: true
+    show_name: true
+    show_icon: true
+    tap_action:
+      action: call-service
+      service: button.press
+      service_data:
+        entity_id: |
+          [[[
+            return entity.entity_id
+              .replace('sensor.', 'button.')
+              .replace('_choreops_chore_status_', '_choreops_claim_chore_');
+          ]]]
+      confirmation:
+        text: |
+          [[[
+            const choreName = entity.attributes.chore_name
+                           || entity.attributes.friendly_name
+                           || entity.entity_id;
+            const assignee = entity.attributes.assignee
+                          || entity.attributes.user_name
+                          || '';
+            return assignee
+              ? `Mark "${choreName}" as done for ${assignee}?`
+              : `Mark "${choreName}" as done?`;
+          ]]]
+    hold_action:
+      action: more-info
+    name: |
+      [[[
+        const choreName = entity.attributes.chore_name
+                       || entity.attributes.friendly_name
+                       || entity.entity_id;
+        const assignee = entity.attributes.assignee
+                      || entity.attributes.user_name
+                      || '';
+        return assignee ? `${choreName}  ·  ${assignee}` : choreName;
+      ]]]
+    state:
+      - value: due
+        color: var(--error-color)
+        icon: mdi:clock-alert-outline
+        label: Due today
+      - value: pending
+        color: var(--warning-color)
+        icon: mdi:clock-outline
+        label: Pending
+      - value: in_progress
+        color: var(--info-color)
+        icon: mdi:progress-check
+        label: In progress
+    styles:
+      card:
+        - padding: 4px 8px
+        - border-radius: 8px
+        - margin: 2px 4px
+      grid:
+        - grid-template-columns: min-content 1fr
+        - justify-items: start
+        - align-items: center
+      name:
+        - font-size: 0.9em
+        - font-weight: 500
+        - text-align: left
+        - white-space: nowrap
+        - overflow: hidden
+        - text-overflow: ellipsis
+      state:
+        - font-size: 0.72em
+        - text-align: left
+        - color: var(--secondary-text-color)
+      icon:
+        - width: 28px
+        - margin-right: 8px
